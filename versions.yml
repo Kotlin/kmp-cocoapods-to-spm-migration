@@ -1,0 +1,5 @@
+# Version requirements for CocoaPods to SwiftPM migration
+# Kotlin version is now dynamic — the skill asks the user at migration time.
+
+xcode: "16.4 or 26.0+"
+ios_deployment_target: "16.0"

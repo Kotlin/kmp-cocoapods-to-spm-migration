@@ -1,0 +1,21 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# Claude Code local settings
+.claude/
+
+# Temporary files
+*.swp
+*.swo
+*~
+
+# Generated distribution files (built by CI)
+*.skill
+*.tar.gz
