@@ -1,0 +1,12 @@
+# Version requirements for CocoaPods to SwiftPM migration
+# Update values here, then run: ./update-versions.sh
+
+kotlin: "2.2.21-titan-211"
+gradle: "9.2.1"
+xcode: "16.4 or 26.0+"
+ios_deployment_target: "16.0"
+
+# Custom Kotlin repository (required for experimental builds)
+# Set to false when using official Kotlin releases
+custom_kotlin_repo_required: true
+custom_kotlin_repo_url: "https://packages.jetbrains.team/maven/p/kt/dev"

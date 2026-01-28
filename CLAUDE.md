@@ -87,3 +87,20 @@ The documentation should be:
 - AI-friendly with clear phase structure
 - Actionable with specific commands and code snippets
 - Include troubleshooting for common issues
+
+## Version Management
+
+Version requirements are centralized in `versions.yml`:
+
+```yaml
+kotlin: "2.2.21-titan-211"
+gradle: "9.2.1"
+custom_kotlin_repo_required: true
+custom_kotlin_repo_url: "https://packages.jetbrains.team/maven/p/kt/dev"
+```
+
+To update versions across all documentation:
+1. Edit `versions.yml`
+2. Run `./update-versions.sh`
+
+Note: Set `custom_kotlin_repo_required: false` when the feature graduates to official Kotlin releases.

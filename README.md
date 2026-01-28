@@ -112,6 +112,15 @@ See [common-pods-mapping.md](references/common-pods-mapping.md) for the full lis
 | [common-pods-mapping.md](references/common-pods-mapping.md) | Pod to SPM mappings |
 | [troubleshooting.md](references/troubleshooting.md) | Issues and solutions |
 
+## Updating Version Requirements
+
+Version requirements are centralized in `versions.yml`. To update:
+
+1. Edit `versions.yml` with new version numbers
+2. Run `./update-versions.sh`
+3. Review changes with `git diff`
+4. Commit the updates
+
 ## License
 
 Apache License 2.0 - See [LICENSE](LICENSE) for details.
