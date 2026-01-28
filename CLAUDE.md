@@ -12,20 +12,17 @@ The skill is designed to be used with:
 
 ## Repository Structure
 
+This repository follows the [AgentSkills specification](https://agentskills.io/specification).
+
 ```
 /
-├── README.md                    # Repository overview and installation
-├── SKILL.md                     # Claude Code skill definition (comprehensive version)
-├── MIGRATION_GUIDE.md           # Step-by-step migration guide
-├── references/
+├── SKILL.md                     # AgentSkills skill definition (main entry point)
+├── MIGRATION_GUIDE.md           # User-facing guide (drag into Claude)
+├── references/                  # AgentSkills reference documents
 │   ├── dsl-reference.md         # Full swiftPMDependencies DSL syntax
 │   ├── common-pods-mapping.md   # Pod to SPM package mappings
 │   └── troubleshooting.md       # Common issues and solutions
-└── agents/
-    ├── claude-code/
-    │   └── SKILL.md             # Claude Code skill wrapper (references main docs)
-    └── junie/
-        └── guidelines.md        # Junie guidelines (self-contained)
+└── README.md                    # Repository overview and installation
 ```
 
 ## How This Skill Works
@@ -82,10 +79,9 @@ Working examples of migrated projects (for reference):
 
 If modifying the skill or documentation:
 
-1. **SKILL.md** is the comprehensive guide - keep it self-contained
+1. **SKILL.md** is the AgentSkills entry point - keep it self-contained with valid YAML frontmatter
 2. **MIGRATION_GUIDE.md** is the user-facing document to drag into Claude
-3. **agents/claude-code/SKILL.md** is a lightweight wrapper that references main docs
-4. **agents/junie/guidelines.md** should be relatively self-contained for Junie
+3. **references/** contains supporting documentation following the AgentSkills convention
 
 The documentation should be:
 - AI-friendly with clear phase structure

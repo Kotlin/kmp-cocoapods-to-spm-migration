@@ -6,6 +6,15 @@ description: |
   (2) User needs to replace pod() declarations with package() declarations,
   (3) User wants to update imports from cocoapods.* to swiftPMImport.*,
   (4) User mentions CocoaPods to SPM migration for KMP/Kotlin Multiplatform.
+license: Apache-2.0
+compatibility: |
+  Requires Kotlin 2.2.21-titan-211 (custom build), Gradle 9.2.1+, Xcode 16.4 or 26.0+.
+  Works with Claude Code, Junie, or any AgentSkills-compatible assistant.
+metadata:
+  author: JetBrains
+  version: "1.0.0"
+  category: kotlin-multiplatform
+  homepage: https://github.com/Kotlin/kmp-cocoapods-to-spm-migration
 ---
 
 # CocoaPods to SwiftPM Migration for KMP

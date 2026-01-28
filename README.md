@@ -19,29 +19,23 @@ This repository provides comprehensive documentation and AI assistant configurat
 3. Drag the file into a Claude conversation
 4. Follow the AI-guided migration process
 
-### Option 2: Claude Code Skill
+### Option 2: AgentSkills Installation
 
+This repository follows the [AgentSkills specification](https://agentskills.io/specification).
+
+**For Claude Code:**
 ```bash
-# Clone and install as a skill
-git clone https://github.com/Kotlin/kmp-cocoapods-to-spm-migration.git
-cp -r kmp-cocoapods-to-spm-migration ~/.claude/skills/migrate-cocoapods-to-spm
-
-# Or symlink for updates
-ln -s "$(pwd)/kmp-cocoapods-to-spm-migration" ~/.claude/skills/migrate-cocoapods-to-spm
+git clone https://github.com/Kotlin/kmp-cocoapods-to-spm-migration.git \
+  ~/.claude/skills/migrate-cocoapods-to-spm
 ```
 
-Then invoke with `/migrate-cocoapods-to-spm` in Claude Code.
-
-### Option 3: Junie (JetBrains AI)
-
-Copy the guidelines to your project:
-
+**For Junie:**
 ```bash
-mkdir -p .junie
-cp agents/junie/guidelines.md .junie/guidelines.md
+git clone https://github.com/Kotlin/kmp-cocoapods-to-spm-migration.git \
+  .junie/skills/migrate-cocoapods-to-spm
 ```
 
-Or configure the path in **Settings | Tools | Junie | Project Settings**.
+Then invoke with `/migrate-cocoapods-to-spm` in either Claude Code or Junie.
 
 ## Requirements
 
@@ -63,19 +57,16 @@ Or configure the path in **Settings | Tools | Junie | Project Settings**.
 
 ## Repository Structure
 
+This repository follows the [AgentSkills specification](https://agentskills.io/specification).
+
 ```
 ├── README.md                    # This file
-├── SKILL.md                     # Comprehensive migration guide (Claude Code skill format)
+├── SKILL.md                     # AgentSkills skill definition (main entry point)
 ├── MIGRATION_GUIDE.md           # User-facing guide (drag into Claude)
-├── references/
-│   ├── dsl-reference.md         # Full swiftPMDependencies DSL syntax
-│   ├── common-pods-mapping.md   # Pod to SPM package mappings
-│   └── troubleshooting.md       # Common issues and solutions
-└── agents/
-    ├── claude-code/
-    │   └── SKILL.md             # Claude Code skill wrapper
-    └── junie/
-        └── guidelines.md        # Junie guidelines
+└── references/                  # AgentSkills reference documents
+    ├── dsl-reference.md         # Full swiftPMDependencies DSL syntax
+    ├── common-pods-mapping.md   # Pod to SPM package mappings
+    └── troubleshooting.md       # Common issues and solutions
 ```
 
 ## Sample Projects
