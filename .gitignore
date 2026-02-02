@@ -15,3 +15,7 @@
 *.swp
 *.swo
 *~
+
+# Generated distribution files (built by CI)
+*.skill
+*.tar.gz
