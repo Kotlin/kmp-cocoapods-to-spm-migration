@@ -23,12 +23,12 @@ This repository provides comprehensive documentation and AI assistant configurat
 
 **For Claude Code:**
 ```bash
-curl -sL https://github.com/Kotlin/kmp-cocoapods-to-spm-migration/releases/latest/download/migrate-cocoapods-to-spm.tar.gz | tar xz -C ~/.claude/skills
+curl -sL https://kotl.in/pods-spm-skill | tar xz -C ~/.claude/skills
 ```
 
 **For Junie:**
 ```bash
-curl -sL https://github.com/Kotlin/kmp-cocoapods-to-spm-migration/releases/latest/download/migrate-cocoapods-to-spm.tar.gz | tar xz -C .junie/skills
+curl -sL https://kotl.in/pods-spm-skill | tar xz -C .junie/skills
 ```
 
 Then invoke with `/migrate-cocoapods-to-spm` in either Claude Code or Junie.

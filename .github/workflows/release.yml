@@ -29,12 +29,14 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
 
-      - name: Create archive
+      - name: Create archives
         if: steps.check.outputs.exists == 'false'
         run: |
-          mkdir -p migrate-cocoapods-to-spm
-          cp -r SKILL.md MIGRATION_GUIDE.md CLAUDE.md versions.yml LICENSE references migrate-cocoapods-to-spm/
+          mkdir -p migrate-cocoapods-to-spm/references
+          cp SKILL.md LICENSE migrate-cocoapods-to-spm/
+          cp references/*.md migrate-cocoapods-to-spm/references/
           tar -czvf migrate-cocoapods-to-spm.tar.gz migrate-cocoapods-to-spm
+          zip -r migrate-cocoapods-to-spm.skill migrate-cocoapods-to-spm
 
       - name: Create Release
         if: steps.check.outputs.exists == 'false'
@@ -42,7 +44,9 @@ jobs:
         with:
           tag_name: v${{ steps.kotlin.outputs.version }}
           name: v${{ steps.kotlin.outputs.version }}
-          files: migrate-cocoapods-to-spm.tar.gz
+          files: |
+            migrate-cocoapods-to-spm.tar.gz
+            migrate-cocoapods-to-spm.skill
           body: |
             ## CocoaPods to SwiftPM Migration Skill
 
@@ -52,18 +56,21 @@ jobs:
 
             ### Claude Code
             ```bash
-            curl -sL https://github.com/Kotlin/kmp-cocoapods-to-spm-migration/releases/latest/download/migrate-cocoapods-to-spm.tar.gz | tar xz -C ~/.claude/skills
+            curl -sL https://kotl.in/pods-spm-skill | tar xz -C ~/.claude/skills
             ```
             Then invoke with `/migrate-cocoapods-to-spm`
 
             ### Junie (JetBrains AI)
             ```bash
-            curl -sL https://github.com/Kotlin/kmp-cocoapods-to-spm-migration/releases/latest/download/migrate-cocoapods-to-spm.tar.gz | tar xz -C .junie/skills
+            curl -sL https://kotl.in/pods-spm-skill | tar xz -C .junie/skills
             ```
             Then invoke with `/migrate-cocoapods-to-spm`
 
+            ### Alternative: .skill Package
+            Download `migrate-cocoapods-to-spm.skill` and extract to your skills directory.
+
             ### Manual Use
-            Download `MIGRATION_GUIDE.md` below and drag it into any Claude conversation.
+            Download [MIGRATION_GUIDE.md](https://github.com/Kotlin/kmp-cocoapods-to-spm-migration/blob/master/MIGRATION_GUIDE.md) and drag it into any Claude conversation.
           generate_release_notes: true
 
       - name: Skip message
