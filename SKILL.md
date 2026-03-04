@@ -1,11 +1,6 @@
 ---
 name: migrate-cocoapods-to-spm
-description: |
-  Migrate Kotlin Multiplatform (KMP) projects from CocoaPods to Swift Package Manager import.
-  Use when: (1) User wants to migrate from kotlin("native.cocoapods") plugin to swiftPMDependencies DSL,
-  (2) User needs to replace pod() declarations with package() declarations,
-  (3) User wants to update imports from cocoapods.* to swiftPMImport.*,
-  (4) User mentions CocoaPods to SPM migration for KMP/Kotlin Multiplatform.
+description: Migrate KMP projects from CocoaPods (kotlin("native.cocoapods")) to Swift Package Manager (swiftPMDependencies DSL) — replaces pod() with package(), transforms cocoapods.* imports to swiftPMImport.*, and reconfigures the Xcode project.
 ---
 
 # CocoaPods to SwiftPM Migration for KMP
@@ -78,11 +73,7 @@ Record the user-provided version. Then ask:
 - **Yes** → ask for the repo URL (suggest `https://packages.jetbrains.team/maven/p/kt/dev` as default). Phase 2.1 will add it.
 - **No** → Phase 2.1 is skipped (no custom repo needed).
 
-Finally, check the project's current Kotlin version. Compare **major.minor** against the target version. If it differs significantly (e.g., `2.1.0` → `2.4.0`) → warn:
-
-> ⚠️ **Kotlin version jump detected:** Your project uses Kotlin `<current>`, but the target version is `<target>`. Upgrading across minor versions can introduce breaking changes unrelated to this migration. **Recommended:** update to the target version first, verify the project builds, then re-run this migration.
-
-If the user confirms they want to continue despite the mismatch, proceed without blocking.
+Finally, check the project's current Kotlin version. Compare **major.minor** against the target. If it differs significantly (e.g., `2.1.0` → `2.4.0`), warn: "⚠️ Kotlin version jump — upgrading across minor versions can introduce breaking changes unrelated to this migration. Recommended: update first, verify it builds, then re-run." If the user confirms despite the mismatch, proceed.
 
 ### 1.1 Check for deprecated CocoaPods workaround property
 
@@ -202,12 +193,9 @@ group = "org.example.myproject"  // Required for import namespace
 
 For each pod dependency, add the equivalent SwiftPM package declaration. Use [common-pods-mapping.md](references/common-pods-mapping.md) to map each pod to its SPM package URL, product name, and `importedModules`.
 
-**Key concepts:**
-- **`products`** — SPM product names as declared in the package's `Package.swift`. Controls what gets linked.
-- **`importedModules`** — Clang module names that Kotlin generates cinterop bindings for. Only used when `discoverModulesImplicitly = false`.
-- **`discoverModulesImplicitly`** — When `true` (default), Kotlin generates cinterop bindings for every Clang module in the dependency graph. Set to `false` when transitive dependencies contain C/C++ modules that fail cinterop (common with Firebase, gRPC, etc.), then explicitly list needed modules in `importedModules`.
+**Key concepts:** `products` = SPM product names (controls linking). `importedModules` = Clang module names for cinterop bindings (only when `discoverModulesImplicitly = false`). `discoverModulesImplicitly` defaults to `true` (bindings for all Clang modules); set `false` when transitive C/C++ modules fail cinterop (Firebase, gRPC), then list needed modules explicitly.
 
-**Important:** SPM product names and Clang module names don't always match. Some libraries expose ObjC headers through internal Clang modules with different names, have beta suffixes on products, or include module-only dependencies. Always consult [common-pods-mapping.md](references/common-pods-mapping.md) for the correct values.
+**Important:** SPM product names and Clang module names don't always match. Always consult [common-pods-mapping.md](references/common-pods-mapping.md) for correct values.
 
 **Do not mix the same library suite across CocoaPods and SPM.** Libraries that share a common repository (e.g., all Firebase products) share transitive dependencies. Having some products linked via CocoaPods and others via SPM causes duplicate/conflicting symbols and dyld crashes at runtime. When migrating such a suite, move **all** pods from that suite to SPM at once — including Swift-only pods that Kotlin doesn't use directly. Add Swift-only pods as `products` entries (no `importedModules` needed). After adding new products, re-run `integrateLinkagePackage` to regenerate the linkage Swift package.
 
@@ -302,20 +290,13 @@ import swiftPMImport.org.jetbrains.kotlin.firebase.sample.kotlin.library.FIRAnal
 
 ### Preserving Bundled Klib Imports
 
-> **CRITICAL:** Do NOT replace `cocoapods.*` imports that resolve to third-party KMP libraries' bundled cinterop klibs (identified in Phase 1 step 1.3). These imports must remain as-is — the `cocoapods` prefix is just the package namespace embedded in the library's published klib artifact, not an actual CocoaPods dependency.
+> **CRITICAL:** Do NOT replace `cocoapods.*` imports that resolve to third-party KMP libraries' bundled cinterop klibs (identified in Phase 1 step 1.3). These imports must remain as-is — the `cocoapods` prefix is the package namespace in the library's published klib, not an actual CocoaPods dependency. The swiftPMDependencies cinterop generator skips modules already provided by a dependency's klib, so `swiftPMImport.*` for those classes will fail with "Unresolved reference".
 
-**Example:** A project using [KMPNotifier](https://github.com/mirzemehdi/KMPNotifier) (`io.github.mirzemehdi:kmpnotifier`) after migration:
-
+**Example** (project using [KMPNotifier](https://github.com/mirzemehdi/KMPNotifier)):
 ```kotlin
-// KEEP — resolves to kmpnotifier's bundled cinterop klib, NOT actual CocoaPods
+// KEEP — resolves to kmpnotifier's bundled cinterop klib
 import cocoapods.FirebaseMessaging.FIRMessaging
-import cocoapods.FirebaseMessaging.FIRMessagingAPNSTokenType
-
-// REPLACE — this was a direct pod cinterop, now uses swiftPMImport
-import swiftPMImport.com.example.app.GIDSignIn
 ```
-
-If the swiftPMDependencies cinterop generator detects that bindings for a Clang module already exist in a dependency's klib, it **skips generating new bindings** for that module. Attempting to use `swiftPMImport.*` for those classes will fail with "Unresolved reference" because the bindings simply don't exist in the swiftPMImport klib.
 
 ### Bulk Replacement
 
@@ -349,18 +330,11 @@ The build output will contain a command like:
 XCODEPROJ_PATH='/path/to/project/iosApp.xcodeproj' GRADLE_PROJECT_PATH=':shared' '/path/to/project/gradlew' -p '/path/to/project' ':shared:integrateEmbedAndSign' ':shared:integrateLinkagePackage'
 ```
 
-Run this command. It modifies the `.xcodeproj` to trigger `embedAndSignAppleFrameworkForXcode` during the build. Note: `integrateLinkagePackage` is a one-time setup task that adds the internal Swift package and linkage — it does not need to be added as a build phase.
+Run this command. It modifies the `.xcodeproj` to trigger `embedAndSignAppleFrameworkForXcode` during the build. `integrateLinkagePackage` is a one-time setup — it does not need to be added as a build phase. If `integrateEmbedAndSign` is skipped, check for EmbedAndSign disablers (Phase 1 step 1.2) — remove them first, then re-run.
 
-**If `integrateEmbedAndSign` is skipped or fails silently:** Check for EmbedAndSign disablers identified in Phase 1 step 1.2. If present, **remove them first** (or temporarily comment them out), then re-run the integration command. The disabler prevents `integrateEmbedAndSign` from executing.
+**Verify `embedAndSignAppleFrameworkForXcode` is active:** After running integration, check the build phase script in `project.pbxproj`. If `embedAndSignAppleFrameworkForXcode` is commented out (prefixed with `#`), uncomment it.
 
-**Verify `embedAndSignAppleFrameworkForXcode` is active:** After running the integration tasks, check the Xcode build phase script in `project.pbxproj`. If the `embedAndSignAppleFrameworkForXcode` Gradle invocation is **commented out** (prefixed with `#`), uncomment it:
-
-```diff
--#./gradlew :moduleName:embedAndSignAppleFrameworkForXcode
-+./gradlew :moduleName:embedAndSignAppleFrameworkForXcode
-```
-
-The `integrateLinkagePackage` task generates an `_internal_linkage_SwiftPMImport` Swift package at `<iosDir>/_internal_linkage_SwiftPMImport/`. This package mirrors your `products` list in a `Package.swift` and ensures the SPM libraries are linked into the final app binary. It is added to the Xcode project as a local package dependency.
+The `integrateLinkagePackage` task generates `_internal_linkage_SwiftPMImport/` at `<iosDir>/` — a local Swift package that mirrors your `products` list and ensures SPM libraries are linked into the final binary.
 
 After running the integration tasks, **disable User Script Sandboxing** (`ENABLE_USER_SCRIPT_SANDBOXING = NO`) in the `.xcodeproj`. Xcode 16+ enables it by default, which prevents the Gradle build phase from writing to the project directory:
 
@@ -477,19 +451,14 @@ Build the migrated module to verify the migration succeeded:
 
 ### 7.3 Build iOS/macOS Xcode project
 
-After the Gradle build succeeds, build the actual Xcode project to verify the full integration:
-
-Use `-project *.xcodeproj` if all CocoaPods were removed (Option A), or `-workspace *.xcworkspace` if non-KMP CocoaPods remain (Option B):
+After the Gradle build succeeds, build the Xcode project. Use `-project *.xcodeproj` if all CocoaPods were removed (Option A), or `-workspace *.xcworkspace` if non-KMP CocoaPods remain (Option B):
 
 ```bash
 cd /path/to/iosApp
-# Discover schemes (replace -project/-workspace as needed):
+# Discover schemes and build (replace -project/-workspace as needed; for macOS use -destination 'platform=macOS'):
 xcodebuild -project *.xcodeproj -list -json 2>/dev/null | python3 -c "import sys,json; schemes=json.load(sys.stdin)['project']['schemes']; [print(s) for s in schemes]"
-# Build the app scheme:
 xcodebuild -project *.xcodeproj -scheme "<AppScheme>" -destination 'generic/platform=iOS Simulator' ARCHS=arm64 build
 ```
-
-For macOS targets, use `-destination 'platform=macOS'` instead.
 
 **If `checkSandboxAndWriteProtection` fails** — sandboxing was not disabled in Phase 5.1. Go back and apply the sandboxing fix from Phase 5.1, then retry.
 
