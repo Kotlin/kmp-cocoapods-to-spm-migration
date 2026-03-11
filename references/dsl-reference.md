@@ -25,8 +25,8 @@ kotlin {
         discoverModulesImplicitly = true
 
         // Package declarations
-        `package`(...)
-        localPackage(...)
+        swiftPackage(...)
+        localSwiftPackage(...)
     }
 }
 ```
@@ -38,7 +38,7 @@ kotlin {
 ### Remote Package (Git URL)
 
 ```kotlin
-`package`(
+swiftPackage(
     url = url("https://github.com/owner/repo.git"),
     version = from("1.0.0"),
     products = listOf(
@@ -51,7 +51,7 @@ kotlin {
 ### Remote Package (Swift Package Registry)
 
 ```kotlin
-`package`(
+swiftPackage(
     repository = id("scope.package-name"),
     version = from("1.0.0"),
     products = listOf(product("ProductName")),
@@ -61,9 +61,9 @@ kotlin {
 ### Local Package
 
 ```kotlin
-localPackage(
-    path = projectDir.resolve("../LocalPackage"),
-    products = listOf("LocalPackage")
+localSwiftPackage(
+    directory = layout.projectDirectory.dir("../LocalPackage"),
+    products = listOf("LocalPackage"),
 )
 ```
 
@@ -169,7 +169,7 @@ When automatic discovery is disabled and the Clang module name differs from the 
 swiftPMDependencies {
     discoverModulesImplicitly = false  // Disable auto-discovery
 
-    `package`(
+    swiftPackage(
         url = url("https://github.com/firebase/firebase-ios-sdk.git"),
         version = from("12.6.0"),
         products = listOf(
@@ -264,7 +264,7 @@ kotlin {
         )
 
         // Firebase packages
-        `package`(
+        swiftPackage(
             url = url("https://github.com/firebase/firebase-ios-sdk.git"),
             version = from("12.6.0"),
             products = listOf(
@@ -275,7 +275,7 @@ kotlin {
         )
 
         // Google Maps (iOS only, exact version)
-        `package`(
+        swiftPackage(
             url = url("https://github.com/googlemaps/ios-maps-sdk.git"),
             version = exact("10.6.0"),
             products = listOf(
@@ -284,9 +284,9 @@ kotlin {
         )
 
         // Local package
-        localPackage(
-            path = projectDir.resolve("LocalWrapper"),
-            products = listOf("LocalWrapper")
+        localSwiftPackage(
+            directory = layout.projectDirectory.dir("LocalWrapper"),
+            products = listOf("LocalWrapper"),
         )
     }
 
@@ -320,14 +320,14 @@ You can optionally declare transitive dependencies explicitly to pin specific ve
 ```kotlin
 swiftPMDependencies {
     // Main dependency
-    `package`(
+    swiftPackage(
         url = url("https://github.com/firebase/firebase-ios-sdk.git"),
         version = from("12.5.0"),
         products = listOf(product("FirebaseAnalytics")),
     )
 
     // Transitive dependency with explicit version
-    `package`(
+    swiftPackage(
         url = url("https://github.com/apple/swift-protobuf.git"),
         version = exact("1.32.0"),
         products = listOf(),  // No direct import needed

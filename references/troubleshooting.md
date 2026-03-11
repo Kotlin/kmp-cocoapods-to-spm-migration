@@ -314,7 +314,7 @@ With a static framework, all symbols are embedded in the `.a` archive. No `LC_LO
 swiftPMDependencies {
     discoverModulesImplicitly = false
 
-    `package`(
+    swiftPackage(
         url = url("https://github.com/firebase/firebase-ios-sdk.git"),
         version = from("12.6.0"),
         products = listOf(product("FirebaseAnalytics"), /* ... */),
@@ -353,7 +353,7 @@ See [common-pods-mapping.md](common-pods-mapping.md) for the full importedModule
 **Solution:** Add explicit importedModules:
 
 ```kotlin
-`package`(
+swiftPackage(
     url = url("https://github.com/firebase/firebase-ios-sdk.git"),
     version = from("12.6.0"),
     products = listOf(product("FirebaseFirestore")),
@@ -448,7 +448,7 @@ After adding new products, re-run `integrateLinkagePackage` to regenerate the li
 **Solution:** GoogleMaps requires exact version matching:
 
 ```kotlin
-`package`(
+swiftPackage(
     url = url("https://github.com/googlemaps/ios-maps-sdk.git"),
     version = exact("10.6.0"),  // Must use exact(), not from()
     products = listOf(

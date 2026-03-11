@@ -45,7 +45,7 @@ All Firebase products come from a single repository: `https://github.com/firebas
 pod("FirebaseAnalytics") { version = "12.5.0" }
 
 // SwiftPM
-`package`(
+swiftPackage(
     url = url("https://github.com/firebase/firebase-ios-sdk.git"),
     version = from("12.6.0"),
     products = listOf(product("FirebaseAnalytics")),
@@ -65,7 +65,7 @@ import swiftPMImport.<group>.<module>.FIRApp
 pod("FirebaseAuth") { version = "12.5.0" }
 
 // SwiftPM
-`package`(
+swiftPackage(
     url = url("https://github.com/firebase/firebase-ios-sdk.git"),
     version = from("12.6.0"),
     products = listOf(product("FirebaseAuth")),
@@ -87,7 +87,7 @@ Database's Clang module name differs from its SPM product name. You **must** spe
 pod("FirebaseDatabase") { version = "12.5.0" }
 
 // SwiftPM - Note the importedModules parameter
-`package`(
+swiftPackage(
     url = url("https://github.com/firebase/firebase-ios-sdk.git"),
     version = from("12.6.0"),
     products = listOf(product("FirebaseDatabase")),
@@ -110,7 +110,7 @@ Firestore's Clang module name differs from its SPM product name. You **must** sp
 pod("FirebaseFirestore") { version = "12.5.0" }
 
 // SwiftPM - Note the importedModules parameter
-`package`(
+swiftPackage(
     url = url("https://github.com/firebase/firebase-ios-sdk.git"),
     version = from("12.6.0"),
     products = listOf(product("FirebaseFirestore")),
@@ -133,7 +133,7 @@ import swiftPMImport.<group>.<module>.FIRDocumentReference
 pod("FirebaseCrashlytics") { version = "12.5.0" }
 
 // SwiftPM
-`package`(
+swiftPackage(
     url = url("https://github.com/firebase/firebase-ios-sdk.git"),
     version = from("12.6.0"),
     products = listOf(product("FirebaseCrashlytics")),
@@ -165,7 +165,7 @@ When using multiple Firebase products, declare them in a single package. **Set `
 swiftPMDependencies {
     discoverModulesImplicitly = false
 
-    `package`(
+    swiftPackage(
         url = url("https://github.com/firebase/firebase-ios-sdk.git"),
         version = from("12.6.0"),
         products = listOf(
@@ -250,7 +250,7 @@ Repository: `https://github.com/googlemaps/ios-maps-sdk.git`
 pod("GoogleMaps") { version = "10.3.0" }
 
 // SwiftPM
-`package`(
+swiftPackage(
     url = url("https://github.com/googlemaps/ios-maps-sdk.git"),
     version = exact("10.6.0"),  // Must use exact(), not from()
     products = listOf(
@@ -291,7 +291,7 @@ Repository: `https://github.com/google/GoogleSignIn-iOS.git`
 pod("GoogleSignIn") { version = "8.0.0" }
 
 // SwiftPM
-`package`(
+swiftPackage(
     url = url("https://github.com/google/GoogleSignIn-iOS.git"),
     version = from("8.0.0"),
     products = listOf(product("GoogleSignIn")),
@@ -317,7 +317,7 @@ Simple text generation library with direct mapping.
 pod("LoremIpsum") { version = "2.0.1" }
 
 // SwiftPM
-`package`(
+swiftPackage(
     url = url("https://github.com/lukaskubanek/LoremIpsum.git"),
     version = from("2.0.1"),
     products = listOf(product("LoremIpsum")),

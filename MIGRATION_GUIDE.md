@@ -218,7 +218,7 @@ kotlin {
         //     layout.projectDirectory.file("../iosApp/iosApp.xcodeproj")
         // )
 
-        `package`(
+        swiftPackage(
             url = url("https://github.com/owner/repo.git"),
             version = from("1.0.0"),
             products = listOf(product("ProductName")),
